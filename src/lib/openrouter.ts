@@ -18,7 +18,7 @@ export async function chatComplete(opts: {
       "X-Title": "AI Photo Studio",
     },
     body: JSON.stringify({
-      model: opts.model || "deepseek/deepseek-chat",
+      model: opts.model || "google/gemini-2.5-flash",
       messages: [
         { role: "system", content: opts.systemPrompt },
         { role: "user", content: opts.userPrompt },

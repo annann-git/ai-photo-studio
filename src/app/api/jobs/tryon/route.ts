@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server"
 import { createAdminClient } from "@/lib/supabase/admin"
 
 // Vercel: 这个路由可能跑 30 秒，调大超时
-export const maxDuration = 60
+export const maxDuration = 300
 
 fal.config({
   credentials: process.env.FAL_KEY,
