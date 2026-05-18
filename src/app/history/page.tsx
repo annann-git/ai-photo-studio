@@ -23,6 +23,7 @@ const STATUS_STYLES: Record<string, { text: string; className: string }> = {
 const TYPE_FILTERS = [
   { value: "all", label: "全部" },
   { value: "tryon", label: "AI 换装" },
+  { value: "faceswap", label: "换脸" },
   { value: "background", label: "换背景" },
   { value: "upscale", label: "高清修复" },
 ]
@@ -268,19 +269,24 @@ function JobCard({
         )}
 
         {canSendNext && (
-          <div className="flex flex-wrap gap-1 mt-2">
-            <Link href={`/upscale?${sourceParams}`} className="flex-1 min-w-[60px]">
-              <Button variant="outline" size="sm" className="w-full text-xs h-7">
-                → 修复
-              </Button>
-            </Link>
-            <Link href={`/background?${sourceParams}`} className="flex-1 min-w-[60px]">
-              <Button variant="outline" size="sm" className="w-full text-xs h-7">
-                → 背景
-              </Button>
-            </Link>
-          </div>
-        )}
+  <div className="flex flex-wrap gap-1 mt-2">
+    <Link href={`/upscale?${sourceParams}`} className="flex-1 min-w-[55px]">
+      <Button variant="outline" size="sm" className="w-full text-xs h-7">
+        → 修复
+      </Button>
+    </Link>
+    <Link href={`/background?${sourceParams}`} className="flex-1 min-w-[55px]">
+      <Button variant="outline" size="sm" className="w-full text-xs h-7">
+        → 背景
+      </Button>
+    </Link>
+    <Link href={`/faceswap?${sourceParams}`} className="flex-1 min-w-[55px]">
+      <Button variant="outline" size="sm" className="w-full text-xs h-7">
+        → 换脸
+      </Button>
+    </Link>
+  </div>
+)}
       </div>
     </Card>
   )

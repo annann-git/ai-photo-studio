@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 const navItems = [
   { href: "/", label: "首页" },
   { href: "/tryon", label: "AI 换装" },
+  { href: "/faceswap", label: "换脸" },
   { href: "/background", label: "换背景" },
   { href: "/upscale", label: "高清修复" },
   { href: "/history", label: "历史" },
