@@ -269,24 +269,24 @@ function JobCard({
         )}
 
         {canSendNext && (
-  <div className="flex flex-wrap gap-1 mt-2">
-    <Link href={`/upscale?${sourceParams}`} className="flex-1 min-w-[55px]">
-      <Button variant="outline" size="sm" className="w-full text-xs h-7">
+        <div className="flex flex-wrap gap-1 mt-2">
+         <Link href={`/upscale?${sourceParams}`} className="flex-1 min-w-[55px]">
+           <Button variant="outline" size="sm" className="w-full text-xs h-7">
         → 修复
-      </Button>
-    </Link>
-    <Link href={`/background?${sourceParams}`} className="flex-1 min-w-[55px]">
-      <Button variant="outline" size="sm" className="w-full text-xs h-7">
+           </Button>
+        </Link>
+        <Link href={`/background?${sourceParams}`} className="flex-1 min-w-[55px]">
+           <Button variant="outline" size="sm" className="w-full text-xs h-7">
         → 背景
-      </Button>
-    </Link>
-    <Link href={`/faceswap?${sourceParams}`} className="flex-1 min-w-[55px]">
-      <Button variant="outline" size="sm" className="w-full text-xs h-7">
+          </Button>
+        </Link>
+        <Link href={`/faceswap?${sourceParams}`} className="flex-1 min-w-[55px]">
+          <Button variant="outline" size="sm" className="w-full text-xs h-7">
         → 换脸
-      </Button>
-    </Link>
-  </div>
-)}
+          </Button>
+       </Link>
+      </div>
+     )}
       </div>
     </Card>
   )
