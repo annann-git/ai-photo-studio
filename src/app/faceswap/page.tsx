@@ -172,7 +172,7 @@ export default function FaceSwapPage() {
               )}
             </div>
             {resultUrl && !generating && (
-              
+              <a
                 href={resultUrl}
                 download
                 target="_blank"
