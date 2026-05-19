@@ -75,16 +75,29 @@ export async function POST(request: Request) {
       throw new Error("无法生成签名 URL")
     }
 
+    const falInput: Record<string, unknown> = {
+      face_image_0: faceSigned.data.signedUrl,
+      target_image: targetSigned.data.signedUrl,
+      workflow_type: workflowType,
+      upscale: true,
+    }
+    // 只有用户明确选择了性别才传，否则不传
+    if (gender) {
+      falInput.gender_0 = gender
+    }
+
+    console.log("Fal input:", JSON.stringify({
+      ...falInput,
+      face_image_0: "<signed_url>",
+      target_image: "<signed_url>",
+    }))
+
     const result = await fal.subscribe("easel-ai/advanced-face-swap", {
-      input: {
-        face_image_0: faceSigned.data.signedUrl,
-        target_image: targetSigned.data.signedUrl,
-        workflow_type: workflowType,
-        gender_0: gender || "",
-        upscale: true,
-      },
+      input: falInput,
       logs: false,
     })
+
+    console.log("Fal result keys:", Object.keys(result.data || {}))
 
     const falOutputUrl = result.data?.image?.url
     if (!falOutputUrl) throw new Error("fal.ai 未返回图片")
@@ -130,7 +143,47 @@ export async function POST(request: Request) {
       cost,
     })
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : "生成失败"
+    console.error("=== Faceswap Error ===")
+    console.error("Error type:", error?.constructor?.name)
+    console.error("Error:", error)
+
+    let errorMessage = "生成失败"
+    let falDetail = ""
+
+    if (error instanceof Error) {
+      errorMessage = error.message
+      console.error("Error message:", error.message)
+
+      // fal.ai 客户端的错误对象往往有 body / status / response
+      const falError = error as unknown as Record<string, unknown>
+      if (falError.body) {
+        falDetail = typeof falError.body === "string"
+          ? falError.body
+          : JSON.stringify(falError.body)
+        console.error("Fal body:", falDetail)
+      }
+      if (falError.status) {
+        console.error("Fal status:", falError.status)
+      }
+      if (falError.response) {
+        console.error("Fal response:", JSON.stringify(falError.response))
+      }
+    }
+
+    // 友好提示
+    if (errorMessage.includes("Unprocessable Entity") || errorMessage.includes("422")) {
+      errorMessage = falDetail
+        ? `fal.ai 拒绝：${falDetail}`
+        : "fal.ai 无法处理（详情见 Vercel 日志）"
+    } else if (errorMessage.includes("Unauthorized") || errorMessage.includes("401")) {
+      errorMessage = "fal.ai 认证失败"
+    } else if (errorMessage.includes("Payment Required") || errorMessage.includes("402")) {
+      errorMessage = "fal.ai 余额不足"
+    } else if (errorMessage.includes("Too Many Requests") || errorMessage.includes("429")) {
+      errorMessage = "请求太频繁，稍后重试"
+    } else if (errorMessage.toLowerCase().includes("timeout")) {
+      errorMessage = "生成超时，请重试"
+    }
 
     await supabase
       .from("jobs")
@@ -142,7 +195,6 @@ export async function POST(request: Request) {
       })
       .eq("id", job.id)
 
-    console.error("Faceswap API error:", error)
     return NextResponse.json({ error: errorMessage }, { status: 500 })
   }
 }
